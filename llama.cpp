@@ -403,7 +403,7 @@ static bool llama_model_load(
         vocab.id_to_token.resize(model.hparams.n_vocab);
         std::vector<char> tmp(64);
 
-        for (int i = 0; i < model.hparams.n_vocab; i++) {
+        for (int i = 0; i < model.hparams.n_vocab-1; i++) {
             uint32_t len;
             fin.read((char *) &len, sizeof(len));
 
@@ -425,6 +425,8 @@ static bool llama_model_load(
             tok_score.tok = word;
             tok_score.score = score;
         }
+        vocab.token_to_id["<pad>"] = model.hparams.n_vocab -1;
+        vocab.id_to_token[model.hparams.n_vocab -1] ={ "<pad>", 0.0f };
     }
 
     if (vocab_only) {
